@@ -20,6 +20,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     p7zip-full \
     gosu
 
+RUN dpkg --add-architecture i386 && \
+    apt-get update && apt-get install -y --no-install-recommends \
+        libc6:i386 \
+        libgcc-s1:i386 \
+        libstdc++6:i386 \
+        libstdc++5:i386 \
+        libncurses5:i386
+
 EXPOSE 14567/udp
 EXPOSE 4711/tcp
 EXPOSE 22000/udp

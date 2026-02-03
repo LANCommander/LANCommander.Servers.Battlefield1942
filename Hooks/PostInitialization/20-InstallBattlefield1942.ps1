@@ -10,7 +10,7 @@ if (-not (Test-Path -Path "${Env:SERVER_DIR}/bf1942_lnxded.static")) {
 
     $downloadUrl = $Env:BF1942_SERVER_URL
 
-    curl --output /tmp/bf1942.zip "$downloadUrl"
+    curl -L --output /tmp/bf1942.zip "$downloadUrl"
 
     unzip /tmp/bf1942.zip -d $Env:SERVER_DIR
 
@@ -19,8 +19,13 @@ if (-not (Test-Path -Path "${Env:SERVER_DIR}/bf1942_lnxded.static")) {
     Write-Log "Battlefield 1942 dedicated server already installed in ${Env:SERVER_DIR}, skipping installation."
 }
 
+if (-not (Test-Path -Path "${Env:SERVER_DIR}/bf1942_lnxded")) {
+    Copy-Item "${Env:SERVER_DIR}/bf1942_lnxded.static" "${Env:SERVER_DIR}/bf1942_lnxded"
+    chmod +x "${Env:SERVER_DIR}/bf1942_lnxded"
+}
+
 Write-Log -Message "Battlefield 1942 dedicated server installation complete."
 
 Invoke-Hook "PostInstallBattlefield1942"
 
-Set-Location $Env:SERVER_DIR
+Set-Location $Env:SERVER_ROOT
