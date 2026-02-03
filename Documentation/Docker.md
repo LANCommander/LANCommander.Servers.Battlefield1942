@@ -246,15 +246,6 @@ Write-Host "Running custom setup..."
 # Your custom commands here
 ```
 
-### HTTP File Server
-
-The container includes an optional HTTP file server (port 80) for serving game files to clients. This is useful for fast downloads of custom maps and content.
-
-The file server is configured via environment variables:
-- `HTTP_FILESERVER_ENABLED` - Enable/disable the file server
-- `HTTP_FILESERVER_WEB_ROOT` - Root directory for file serving
-- `HTTP_FILESERVER_FILE_PATTERN` - Pattern for files to serve
-
 ## Additional Resources
 
 - [Server Options](https://docs.lancommander.app/GameServers/BF1942/Options)
