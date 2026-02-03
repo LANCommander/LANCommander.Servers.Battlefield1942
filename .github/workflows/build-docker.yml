@@ -1,27 +1,19 @@
-name: Build & Push Zandronum Server (Docker Hub)
+name: Build & Push Battlefield 1942 Server (Docker Hub)
 
 on:
   workflow_dispatch:
     inputs:
       image_name:
-        description: "Docker Hub image name (e.g., lancommander/zandronum)"
+        description: "Docker Hub image name (e.g., lancommander/bf1942)"
         required: true
-        default: "lancommander/zandronum"
-      zandronum_version:
-        description: "Zandronum version to build (ignored if zandronum_url is set)"
-        required: true
-        default: "3.2.1"
-      zandronum_url:
-        description: "Optional explicit Zandronum archive URL (overrides version if set)"
-        required: false
-        default: ""
+        default: "lancommander/bf1942"
       push_latest:
         description: "Also push the :latest tag"
         required: true
         type: boolean
         default: false
       platforms:
-        description: "Build platforms (comma-separated). Note: Zandronum download is x86_64 by default."
+        description: "Build platforms (comma-separated)."
         required: true
         default: "linux/amd64"
 
@@ -60,29 +52,21 @@ jobs:
             # Set this to your preferred repo, or replace with a repo secret if you prefer.
             IMAGE_NAME="${{ vars.DOCKERHUB_IMAGE_NAME }}"
             if [[ -z "${IMAGE_NAME}" ]]; then
-              echo "DOCKERHUB_IMAGE_NAME variable is not set. Create it (e.g., 'lancommander/zandronum') or use workflow_dispatch."
+              echo "DOCKERHUB_IMAGE_NAME variable is not set. Create it (e.g., 'lancommander/bf1942') or use workflow_dispatch."
               exit 1
             fi
 
-            ZANDRONUM_VERSION="${VERSION}"
-            ZANDRONUM_URL=""
             PUSH_LATEST="false"
             PLATFORMS="linux/amd64"
           else
             IMAGE_NAME="${{ inputs.image_name }}"
-            ZANDRONUM_VERSION="${{ inputs.zandronum_version }}"
-            ZANDRONUM_URL="${{ inputs.zandronum_url }}"
             PUSH_LATEST="${{ inputs.push_latest }}"
             PLATFORMS="${{ inputs.platforms }}"
-            VERSION="${ZANDRONUM_VERSION}"
           fi
 
           echo "image_name=${IMAGE_NAME}" >> "$GITHUB_OUTPUT"
-          echo "zandronum_version=${ZANDRONUM_VERSION}" >> "$GITHUB_OUTPUT"
-          echo "zandronum_url=${ZANDRONUM_URL}" >> "$GITHUB_OUTPUT"
           echo "push_latest=${PUSH_LATEST}" >> "$GITHUB_OUTPUT"
           echo "platforms=${PLATFORMS}" >> "$GITHUB_OUTPUT"
-          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Set up QEMU (multi-arch)
         uses: docker/setup-qemu-action@v3
@@ -108,7 +92,7 @@ jobs:
             type=raw,value=${{ steps.vars.outputs.version }}
             type=raw,value=latest,enable=${{ steps.vars.outputs.push_latest == 'true' }}
           labels: |
-            org.opencontainers.image.title=Zandronum Server
+            org.opencontainers.image.title=Battlefield 1942 Server
             org.opencontainers.image.source=${{ github.repositoryUrl }}
             org.opencontainers.image.revision=${{ github.sha }}
 
@@ -121,17 +105,10 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            ZANDRONUM_VERSION=${{ steps.vars.outputs.zandronum_version }}
-            ZANDRONUM_URL=${{ steps.vars.outputs.zandronum_url }}
 
       # Optional: provide a short summary in the GitHub Actions UI
       - name: Summary
         run: |
           echo "Pushed image: ${{ steps.vars.outputs.image_name }}" >> $GITHUB_STEP_SUMMARY
           echo "Tags: ${{ steps.meta.outputs.tags }}" >> $GITHUB_STEP_SUMMARY
-          echo "Zandronum version: ${{ steps.vars.outputs.zandronum_version }}" >> $GITHUB_STEP_SUMMARY
-          if [ -n "${{ steps.vars.outputs.zandronum_url }}" ]; then
-            echo "Zandronum URL override: ${{ steps.vars.outputs.zandronum_url }}" >> $GITHUB_STEP_SUMMARY
-          fi
           echo "Platforms: ${{ steps.vars.outputs.platforms }}" >> $GITHUB_STEP_SUMMARY
