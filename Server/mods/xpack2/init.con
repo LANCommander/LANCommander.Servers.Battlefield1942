@@ -1,0 +1,8 @@
+game.CustomGameName XPack2
+game.addModPath Mods/XPack2/
+game.addModPath Mods/BF1942/
+game.customGameVersion 1.6
+game.customGameUrl "http://www.battlefield1942.com"
+game.customGameInfo "XPACK2_INFO"
+
+menu.setIntroMoviePath Xpack2 Mods/Xpack2/Movies/Intro.bik
