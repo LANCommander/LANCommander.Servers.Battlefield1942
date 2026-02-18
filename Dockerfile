@@ -7,8 +7,6 @@ ENV BF1942_SERVER_URL="https://github.com/LANCommander/LANCommander.Servers.Batt
 ENV START_EXE="./bf1942_lnxded"
 ENV START_ARGS="+statusMonitor 1"
 
-USER root
-
 # ----------------------------
 # Dependencies
 # ----------------------------
@@ -37,8 +35,6 @@ EXPOSE 27900/tcp
 
 # COPY Modules/ "${BASE_MODULES}/"
 COPY Hooks/ "${BASE_HOOKS}/"
-
-USER lancommander
 
 WORKDIR /config
 ENTRYPOINT ["/usr/local/bin/entrypoint.ps1"]
